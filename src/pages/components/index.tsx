@@ -8,6 +8,7 @@ export default function  Button() {
                 <YujinButton01>버튼 입니당</YujinButton01>
                 <YujinButton02>확인</YujinButton02>
                 <YujinButton03>버~튼</YujinButton03>
+                <YujinButton04>또버튼</YujinButton04>
             </YujinInner>
         </>
     )
@@ -20,6 +21,7 @@ const YujinInner = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  background: #fff;
 `
 const YujinButton01 = styled.button`
   width: 300px;
@@ -30,6 +32,7 @@ const YujinButton01 = styled.button`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+  color: #222;
 `
 const YujinButton02 = styled.button `
   width: 50px;
@@ -69,5 +72,18 @@ const YujinButton03 = styled.button `
   }
   &:hover::before {
     width: 100%;
+  }
+`
+const YujinButton04 = styled.button`
+  width: 200px;
+  height: 40px;
+  background: #95cc95;
+  color: #fff;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #78c078;
   }
 `

@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
+import { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
 export default function Button() {
   const queryClient = useQueryClient();
-
   // GET ----------------------------------------------------------------------------------------------
   const testReactQueryGet01 = useQuery(
     'testReactQueryGet01',
@@ -32,6 +32,7 @@ export default function Button() {
     }
   );
   console.log('test "GET" data02  : ', testReactQueryGet02.data);
+  // const message = testReactQueryGet01.data;
 
   const handleButtonClick01 = () => {
     queryClient.removeQueries('testReactQueryGet02');
@@ -40,7 +41,7 @@ export default function Button() {
 
   const handleButtonClick02 = async () => {
     queryClient.removeQueries('testReactQueryGet01');
-    testReactQueryGet02.refetch(); // 버튼 2를 클릭할 때 두 번째 API를 호출하도록 refetch 메소드 호출
+    testReactQueryGet02.refetch();
   };
 
   return (

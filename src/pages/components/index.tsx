@@ -1,10 +1,41 @@
-
 import styled from "@emotion/styled";
+import React, {useState, useEffect} from "react";
+import axios from "axios";
 
 export default function  Button() {
+
+    const [posts, setPosts] = useState([])
+
+    useEffect(()=>{
+        // axios({
+        //     method : 'GET',
+        //     url : 'https://jsonplaceholder.typicode.com/photos'
+        // }).then(response => setPosts(response.data))
+
+        axios.get('https://jsonplaceholder.typicode.com/photos')
+            .then(response => setPosts(response.data))
+    })
+
+    // useEffect(async()=> {
+    //     try {
+    //         const response = await axios.get('https://jsonplaceholder.typicode.com/photos')
+    //         setPosts(response.data)
+    //     }catch (error){
+    //         console.log(error)
+    //     }
+    // })
+
     return (
         <>
             <YujinInner>
+                <ul>
+                    {posts.map(post => (
+                        <li key={post.id}>
+                            <div>{post.title}</div>
+                            <div><img src={post.thumbnailUrl}/></div>
+                        </li>
+                    ))}
+                </ul>
                 <YujinButton01>버튼 입니당</YujinButton01>
                 <YujinButton02>확인</YujinButton02>
                 <YujinButton03>버~튼</YujinButton03>
@@ -13,6 +44,15 @@ export default function  Button() {
         </>
     )
 }
+const PostsBox = styled.div`
+  width: 300px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: bisque;
+  color: #222;
+`
 const YujinInner = styled.div`
   width: 1200px;
   margin: 0 auto;
@@ -22,6 +62,7 @@ const YujinInner = styled.div`
   align-items: center;
   gap: 20px;
   background: #fff;
+  color: #222;
 `
 const YujinButton01 = styled.button`
   width: 300px;

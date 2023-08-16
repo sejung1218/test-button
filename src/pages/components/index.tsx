@@ -6,28 +6,35 @@ export default function  Button() {
 
     const [posts, setPosts] = useState([])
 
-    useEffect(()=>{
-        // axios({
-        //     method : 'GET',
-        //     url : 'https://jsonplaceholder.typicode.com/photos'
-        // }).then(response => setPosts(response.data))
 
-        axios.get('https://jsonplaceholder.typicode.com/photos')
-            .then(response => setPosts(response.data))
-    })
 
-    // useEffect(async()=> {
-    //     try {
-    //         const response = await axios.get('https://jsonplaceholder.typicode.com/photos')
-    //         setPosts(response.data)
-    //     }catch (error){
-    //         console.log(error)
-    //     }
-    // })
+        useEffect(()=>{
+            // axios({
+            //     method : 'GET',
+            //     url : 'https://jsonplaceholder.typicode.com/photos'
+            // }).then(response => setPosts(response.data))
+
+                axios.get('https://192.168.50.67:8080/emon/score?page=1')
+                    .then(response => setPosts(response.data))
+            // function ApiButton(){
+            // }
+            // console.log(ApiButton())
+
+        })
+
+        // useEffect(async()=> {
+        //     try {
+        //         const response = await axios.get('https://jsonplaceholder.typicode.com/photos')
+        //         setPosts(response.data)
+        //     }catch (error){
+        //         console.log(error)
+        //     }
+        // })
+
 
     return (
-        <>
             <YujinInner>
+                <YujinButton01>버튼 입니당</YujinButton01>
                 <ul>
                     {posts.map(post => (
                         <li key={post.id}>
@@ -36,12 +43,10 @@ export default function  Button() {
                         </li>
                     ))}
                 </ul>
-                <YujinButton01>버튼 입니당</YujinButton01>
                 <YujinButton02>확인</YujinButton02>
                 <YujinButton03>버~튼</YujinButton03>
                 <YujinButton04>또버튼</YujinButton04>
             </YujinInner>
-        </>
     )
 }
 const PostsBox = styled.div`

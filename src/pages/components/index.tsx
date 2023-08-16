@@ -5,31 +5,46 @@ import axios from "axios";
 export default function Button() {
   // const [value, setValue] = useState('')
   //
-  // function onClickApiBtn(){
+  // function onClickApiGetBtn(){
   //   axios.get('https://jsonplaceholder.typicode.com/photos')
   //     .then(response => setValue(response.data))
   //   console.log(setValue)
   // }
+
+
   const [value, setValue] = useState('')
 
-  async function onClickApiBtn() {
+  async function onClickApiGetBtn() {
     const response = await axios.get('/emon/score')
     console.log(response.data)
-    setValue(response.data[0].title)
+    setValue(response.data[0].evalType)
     // const onChange = (e) => {
     //   setText(e.target.value)
   }
 
-  const onReset = () => {
-    setValue('')
-  }
+
+  // async function onClickApiPutBtn(){
+  //   try {
+  //     const response = await axios.put("/emon/score", {
+  //       "evalType": ""
+  //     });
+  //     setValue(response.data[0].evalType)
+  //   } catch {
+  //   }
+  // }
+
+  // const onReset = () => {
+  //   setValue('')
+  // }
 
 
   return (
     <YujinInner>
-      <YujinButton01 onClick={onClickApiBtn}>테스트버튼</YujinButton01>
+      <YujinGetButton onClick={onClickApiGetBtn}>Get테스트버튼</YujinGetButton>
       <input value={value}/>
-      {/*<YujinButton01 onClick={onClickApiBtn}>버튼 입니당</YujinButton01>*/}
+      <YujinPutButton onClick={onClickApiPutBtn}>Put테스트버튼</YujinPutButton>
+      <input value={value}/>
+      {/*<YujinGetButton onClick={onClickApiGetBtn}>버튼 입니당</YujinGetButton>*/}
       {/*<input type="text" value={value}/>*/}
       <ul>
         {/*{posts.map(post => (*/}
@@ -65,11 +80,22 @@ const YujinInner = styled.div`
   background: #fff;
   color: #222;
 `
-const YujinButton01 = styled.button`
+const YujinGetButton = styled.button`
   width: 300px;
   height: 40px;
   border: 1px solid #ddd;
   background: #efefef;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #222;
+`
+const YujinPutButton = styled.button`
+  width: 300px;
+  height: 40px;
+  border: 1px solid #ecb5b5;
+  background: #eec7c7;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;

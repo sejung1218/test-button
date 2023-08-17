@@ -25,6 +25,7 @@ const YujinInner = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  background: #fff;
 `
 const YujinButton01 = styled.button`
   width: 300px;
@@ -35,7 +36,7 @@ const YujinButton01 = styled.button`
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  color: black;
+  color: #222;
 `
 const YujinButton02 = styled.button`
   width: 50px;
@@ -62,6 +63,7 @@ const YujinButton03 = styled.button`
   color: #ED4D4D;
   border: none;
   position: relative;
+  cursor: pointer;
 
   &::before {
     content: '';

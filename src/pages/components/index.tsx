@@ -13,14 +13,40 @@ export default function Button() {
 
 
   const [value, setValue] = useState('')
+  const [name, setName] = useState("");
+
 
   async function onClickApiGetBtn() {
     const response = await axios.get('/emon/score')
     console.log(response.data)
     setValue(response.data[0].evalType)
-    // const onChange = (e) => {
-    //   setText(e.target.value)
   }
+
+const addUser = () => {
+  axios
+    .post("https://api.example.com/users", { name, email })
+    .then(() => {
+      getUsers();
+      setName("");
+      setEmail("");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+
+  // async function onClickApiPutBtn(evalType){
+  //     try {
+  //       const response = await axios.put(`/emon/score/${evalType}`, {
+  //         "evalType" : ''
+  //       });
+  //       setValue(response.data[0].evalType)
+  //     } catch {
+  //       console.log('error')
+  //     }
+  // }
+
 
 
   // async function onClickApiPutBtn(){
@@ -41,9 +67,10 @@ export default function Button() {
   return (
     <YujinInner>
       <YujinGetButton onClick={onClickApiGetBtn}>Get테스트버튼</YujinGetButton>
-      <input value={value}/>
+      <input type="text" defaultValue={value} placeholder={"Get테스트버튼 클릭"}/>
+      <input type="text" placeholder={"값을 입력해보세요"}/>
+      <input type="text" defaultValue={putValue}/>
       <YujinPutButton onClick={onClickApiPutBtn}>Put테스트버튼</YujinPutButton>
-      <input value={value}/>
       {/*<YujinGetButton onClick={onClickApiGetBtn}>버튼 입니당</YujinGetButton>*/}
       {/*<input type="text" value={value}/>*/}
       <ul>

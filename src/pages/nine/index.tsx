@@ -36,8 +36,8 @@ const TestButtonWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: black;
-  border: 1px solid white;
 `;
+
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3개의 열, 각 열의 너비를 균등하게 */

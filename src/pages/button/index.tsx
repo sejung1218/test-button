@@ -10,7 +10,7 @@ interface ButtonState {
 
 export default function Button(props: ButtonState) {
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   // const testEmonGet = useQuery(
   //   'testEmonGet',
@@ -29,75 +29,76 @@ export default function Button(props: ButtonState) {
   //   console.log('test emon "GET" data  : ', testEmonGet);
   // };
 
-  const formik = useFormik<ButtonState>({
-    initialValues: {
-      userAgentPk: '',
-      isEmonSend: false,
-    },
-    onSubmit: async (values) => {
-      try {
-        queryClient.removeQueries('testEmonGet');
-        console.log('input values:', values);
-        if (values.userAgentPk) {
-          const testEmonPut
-            = await axios.put(`/emon/score/?userAgentPk=${values.userAgentPk}&isEmonSend=${values.isEmonSend}`, {
-            ...values,
-          });
-          console.log('test emon "PUT" data (userAgentPk O) : ', testEmonPut);
-        } else {
-          const testEmonPut = await axios.put(`/emon/score`)
-          console.log('test emon "PUT" data (userAgentPk X)  : ', testEmonPut);
-        }
-      } catch (error) {
-        console.error('Error submitting form:', error);
-      }
-    },
-  });
+  // const formik = useFormik<ButtonState>({
+  //   initialValues: {
+  //     userAgentPk: '',
+  //     isEmonSend: false,
+  //   },
+  //   onSubmit: async (values) => {
+  //     try {
+  //       queryClient.removeQueries('testEmonGet');
+  //       console.log('input values:', values);
+  //       if (values.userAgentPk) {
+  //         const testEmonPut
+  //           = await axios.put(`/emon/score/?userAgentPk=${values.userAgentPk}&isEmonSend=${values.isEmonSend}`, {
+  //           ...values,
+  //         });
+  //         console.log('test emon "PUT" data (userAgentPk O) : ', testEmonPut);
+  //       } else {
+  //         const testEmonPut = await axios.put(`/emon/score`)
+  //         console.log('test emon "PUT" data (userAgentPk X)  : ', testEmonPut);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error submitting form:', error);
+  //     }
+  //   },
+  // });
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <TestButtonWrapper>
-        {/*<TestButton onClick={handleButtonClick01}>GET</TestButton>*/}
-        <TitleEmon>EMON 스코어 데이터 재전송</TitleEmon>
-
-        <div
-          style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '7px'}}>
-          <InputSpan>수강생 ID : </InputSpan>
-          <StyledInput
-            type="text"
-            id="userAgentPk"
-            name="userAgentPk"
-            placeholder="Input ID"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.userAgentPk}
-          />
-        </div>
-        <div
-          style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '15px'}}>
-          <label>
-            <InputSpan>isEmonSend : </InputSpan>
-            <select
-              id="isEmonSend"
-              name="isEmonSend"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.isEmonSend.toString()}
-              // value={formik.values.isEmonSend}
-              style={{
-                marginLeft: '5px',
-                width: '75px',
-              }}
-            >
-              <option style={{width: '35px'}} value={true.toString()}>TRUE</option>
-              <option value={false.toString()}>FALSE</option>
-            </select>
-          </label>
-        </div>
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <TestButton type='submit'>전송</TestButton>
-        </div>
-      </TestButtonWrapper>
-    </form>
+    // <form onSubmit={formik.handleSubmit}>
+    //   <TestButtonWrapper>
+    //     {/*<TestButton onClick={handleButtonClick01}>GET</TestButton>*/}
+    //     <TitleEmon>EMON 스코어 데이터 재전송</TitleEmon>
+    //
+    //     <div
+    //       style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '7px'}}>
+    //       <InputSpan>수강생 ID : </InputSpan>
+    //       <StyledInput
+    //         type="text"
+    //         id="userAgentPk"
+    //         name="userAgentPk"
+    //         placeholder="Input ID"
+    //         onChange={formik.handleChange}
+    //         onBlur={formik.handleBlur}
+    //         value={formik.values.userAgentPk}
+    //       />
+    //     </div>
+    //     <div
+    //       style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '15px'}}>
+    //       <label>
+    //         <InputSpan>isEmonSend : </InputSpan>
+    //         <select
+    //           id="isEmonSend"
+    //           name="isEmonSend"
+    //           onChange={formik.handleChange}
+    //           onBlur={formik.handleBlur}
+    //           value={formik.values.isEmonSend.toString()}
+    //           // value={formik.values.isEmonSend}
+    //           style={{
+    //             marginLeft: '5px',
+    //             width: '75px',
+    //           }}
+    //         >
+    //           <option style={{width: '35px'}} value={true.toString()}>TRUE</option>
+    //           <option value={false.toString()}>FALSE</option>
+    //         </select>
+    //       </label>
+    //     </div>
+    //     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    //       <TestButton type='submit'>전송</TestButton>
+    //     </div>
+    //   </TestButtonWrapper>
+    // </form>
+    <TestButtonWrapper>비활성화</TestButtonWrapper>
   );
 }
 const TestButtonWrapper = styled.div`

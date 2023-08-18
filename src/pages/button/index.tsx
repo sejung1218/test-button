@@ -56,21 +56,26 @@ export default function Button(props: ButtonState) {
   return (
     <form onSubmit={formik.handleSubmit}>
       <TestButtonWrapper>
-        <TestPutButtonWrapper>
-          <TestButton onClick={handleButtonClick01}>GET</TestButton>
-        </TestPutButtonWrapper>
-        <TestPutButtonWrapper>
+        {/*<TestButton onClick={handleButtonClick01}>GET</TestButton>*/}
+        <TitleEmon>EMON 스코어 데이터 재전송</TitleEmon>
+
+        <div
+          style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '7px'}}>
+          <InputSpan>수강생 ID : </InputSpan>
           <StyledInput
             type="text"
             id="userAgentPk"
             name="userAgentPk"
-            placeholder="Enter text"
+            placeholder="Input ID"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.userAgentPk}
           />
-          <label style={{display: 'flex', gap: '5px'}}>
-            isEmonSend :
+        </div>
+        <div
+          style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '15px'}}>
+          <label>
+            <InputSpan>isEmonSend : </InputSpan>
             <select
               id="isEmonSend"
               name="isEmonSend"
@@ -78,13 +83,19 @@ export default function Button(props: ButtonState) {
               onBlur={formik.handleBlur}
               value={formik.values.isEmonSend.toString()}
               // value={formik.values.isEmonSend}
+              style={{
+                marginLeft: '5px',
+                width: '75px',
+              }}
             >
-              <option value={true.toString()}>TRUE</option>
+              <option style={{width: '35px'}} value={true.toString()}>TRUE</option>
               <option value={false.toString()}>FALSE</option>
             </select>
           </label>
-          <TestButton type='submit'>PUT</TestButton>
-        </TestPutButtonWrapper>
+        </div>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <TestButton type='submit'>전송</TestButton>
+        </div>
       </TestButtonWrapper>
     </form>
   );
@@ -96,17 +107,20 @@ const TestButtonWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
 `;
 
-const TestPutButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+const TitleEmon = styled.div`
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
 `
 
 const TestButton = styled.button`
-  width: 180px;
+  width: 120px;
   height: 30px;
   border: none;
   background: #4844ff;
@@ -123,8 +137,12 @@ const TestButton = styled.button`
     background: #2b28ca;
   }
 `;
+const InputSpan = styled.span`
+  display: inline-block;
+`
+
 const StyledInput = styled.input`
-  width: 180px;
+  width: 100px;
   height: 30px;
   padding: 0 5px 0 5px;
 `;

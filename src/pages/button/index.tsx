@@ -12,22 +12,22 @@ export default function Button(props: ButtonState) {
 
   const queryClient = useQueryClient();
 
-  const testEmonGet = useQuery(
-    'testEmonGet',
-    () =>
-      axios.get(
-        '/emon/score'
-      ),
-    {
-      enabled: false,
-    }
-  );
+  // const testEmonGet = useQuery(
+  //   'testEmonGet',
+  //   () =>
+  //     axios.get(
+  //       '/emon/score'
+  //     ),
+  //   {
+  //     enabled: false,
+  //   }
+  // );
 
-  const handleButtonClick01 = async () => {
-    queryClient.removeQueries('testEmonPut');
-    testEmonGet.refetch();
-    console.log('test emon "GET" data  : ', testEmonGet);
-  };
+  // const handleButtonClick01 = async () => {
+  //   queryClient.removeQueries('testEmonPut');
+  //   testEmonGet.refetch();
+  //   console.log('test emon "GET" data  : ', testEmonGet);
+  // };
 
   const formik = useFormik<ButtonState>({
     initialValues: {

@@ -2,77 +2,93 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import {useQuery, useQueryClient} from 'react-query';
 import {useFormik} from "formik";
-import * as yup from 'yup';
-import {useState} from "react";
 
-export default function Button() {
+interface ButtonState {
+  userAgentPk: string;
+  isEmonSend: boolean;
+}
+
+export default function Button(props: ButtonState) {
+
   const queryClient = useQueryClient();
-  const [queryEnabled, setQueryEnabled] = useState(false);
 
   const testEmonGet = useQuery(
     'testEmonGet',
-    () => axios.get('/emon/score'),
+    () =>
+      axios.get(
+        '/emon/score'
+      ),
     {
-      enabled: queryEnabled,
+      enabled: false,
     }
   );
 
-  const validationSchema = yup.object().shape({
-    inputText: yup.string().required('This field is required'),
-  });
+  const handleButtonClick01 = async () => {
+    queryClient.removeQueries('testEmonPut');
+    testEmonGet.refetch();
+    console.log('test emon "GET" data  : ', testEmonGet);
+  };
 
-  const formik = useFormik({
+  const formik = useFormik<ButtonState>({
     initialValues: {
-      inputText: '',
+      userAgentPk: '',
+      isEmonSend: false,
     },
-    validationSchema,
     onSubmit: async (values) => {
       try {
-        await axios.put('/emon/score', values);
         queryClient.removeQueries('testEmonGet');
-        setQueryEnabled(true); // 활성화 상태 변경
+        console.log('input values:', values);
+        if (values.userAgentPk) {
+          const testEmonPut
+            = await axios.put(`/emon/score/?userAgentPk=${values.userAgentPk}&isEmonSend=${values.isEmonSend}`, {
+            ...values,
+          });
+          console.log('test emon "PUT" data (userAgentPk O) : ', testEmonPut);
+        } else {
+          const testEmonPut = await axios.put(`/emon/score`)
+          console.log('test emon "PUT" data (userAgentPk X)  : ', testEmonPut);
+        }
       } catch (error) {
         console.error('Error submitting form:', error);
       }
     },
   });
-
-  const handleGetButtonClick = () => {
-    setQueryEnabled(true); // 활성화 상태 변경
-  };
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <TestButtonWrapper>
         <TestPutButtonWrapper>
-          <StyledInput
-            type="text"
-            id="getText"
-            name="getText"
-            placeholder="Get Data"
-          />
-          <TestButton type="button" onClick={handleGetButtonClick}>GET</TestButton>
+          <TestButton onClick={handleButtonClick01}>GET</TestButton>
         </TestPutButtonWrapper>
         <TestPutButtonWrapper>
           <StyledInput
             type="text"
-            id="inputText"
-            name="inputText"
+            id="userAgentPk"
+            name="userAgentPk"
             placeholder="Enter text"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.inputText}
+            value={formik.values.userAgentPk}
           />
-          {formik.touched.inputText && formik.errors.inputText && (
-            <ErrorText>{formik.errors.inputText}</ErrorText>
-          )}
-          <TestButton type="submit">PUT</TestButton>
+          <label style={{display: 'flex', gap: '5px'}}>
+            isEmonSend :
+            <select
+              id="isEmonSend"
+              name="isEmonSend"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.isEmonSend.toString()}
+              // value={formik.values.isEmonSend}
+            >
+              <option value={true.toString()}>TRUE</option>
+              <option value={false.toString()}>FALSE</option>
+            </select>
+          </label>
+          <TestButton type='submit'>PUT</TestButton>
         </TestPutButtonWrapper>
       </TestButtonWrapper>
     </form>
   );
 }
-
 const TestButtonWrapper = styled.div`
   margin: 0 auto;
   padding: 40px 0;
@@ -110,7 +126,5 @@ const TestButton = styled.button`
 const StyledInput = styled.input`
   width: 180px;
   height: 30px;
-`;
-const ErrorText = styled.div`
-  color: red;
+  padding: 0 5px 0 5px;
 `;

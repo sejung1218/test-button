@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import {useMutation} from 'react-query';
+import {useQueryClient} from 'react-query';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 
@@ -13,39 +13,42 @@ interface ButtonState {
 
 export default function One() {
 
+  const queryClient = useQueryClient();
   const validationSchema = Yup.object().shape({
     userAgentPk: Yup.string().required('ID를 입력해주세요.'), // 사용자 ID 필수 입력
   });
 
-  const mutation = useMutation(
-    async (values: ButtonState) => {
-      const emonPutTest = await axios.put(`/emon/score/?userAgentPk=${values.userAgentPk}&isTest=${values.isTest}&isEmonSend=${values.isEmonSend}`, values);
-      return emonPutTest.data;
-    },
-    {
-      onSuccess: (data) => {
-        console.log('PUT 요청 성공 : ', data);
-        window.open('https://kji.or.kr/emon/test/attend_hist_test.asp');
-        window.open('https://kji.or.kr/emon/test/attend_rslt_ct_hist_test.asp');
-      },
-      onError: (error) => {
-        console.error('PUT 요청 실패 : ', error);
-      }
-    }
-  );
-
   const formik = useFormik<ButtonState>({
     initialValues: {
       userAgentPk: '',
-      isTest: true,
+      isTest: true, // 추가한 부분
       isEmonSend: false,
     },
     validationSchema,
     onSubmit: async (values, {setSubmitting}) => {
       try {
+        queryClient.removeQueries('testEmonGet');
         await validationSchema.validate(values, {abortEarly: false});
         console.log('input values 1:', values);
-        await mutation.mutateAsync(values);
+        console.log('test 2')
+        console.log('values.userAgentPk 3 : ', values.userAgentPk)
+        if (values.userAgentPk) {
+          console.log('test 4')
+          const submitUrl = `/emon/score/?userAgentPk=${values.userAgentPk}&isTest=${values.isTest}&isEmonSend=${values.isEmonSend}`;
+          console.log('test 5')
+          console.log('submitUrl 6 : ', submitUrl)
+          const testEmonPut = await axios.put(submitUrl, {
+            ...values,
+          });
+          console.log('test 7')
+          console.log('test emon "PUT" data (userAgentPk O) 8 : ', testEmonPut);
+          window.open('https://www.naver.com');
+          window.open('https://www.google.com');
+        } else {
+          // const testEmonPut = await axios.put(`/emon/score`)
+          // console.log('test emon "PUT" data (userAgentPk X)  : ', testEmonPut);
+          console.log('No userAgentPk provided.');
+        }
       } catch (error) {
         console.error('Error submitting form:', error);
       } finally {
@@ -53,7 +56,6 @@ export default function One() {
       }
     },
   });
-
   return (
     <TestButtonWrapper>
       <form onSubmit={formik.handleSubmit}>

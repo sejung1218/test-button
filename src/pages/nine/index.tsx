@@ -11,17 +11,15 @@ export default function Nine(props: ButtonState) {
   return (
     <TestButtonWrapper>
       <GridContainer>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
-        <One isEmonSend={props.isEmonSend} userAgentPk={props.userAgentPk}/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
+        <One/>
       </GridContainer>
     </TestButtonWrapper>
   );

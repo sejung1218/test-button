@@ -3,6 +3,8 @@ import axios from 'axios';
 import {useQuery, useQueryClient} from 'react-query';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
+import {Simulate} from "react-dom/test-utils";
+import submit = Simulate.submit;
 
 interface ButtonState {
   userAgentPk: string;
@@ -31,10 +33,15 @@ export default function One() {
         console.log('input values:', values);
         console.log('test1')
         if (values.userAgentPk) {
+          console.log('test2')
           const submitUrl = `/emon/score/?userAgentPk=${values.userAgentPk}&isTest=${values.isTest}&isEmonSend=${values.isEmonSend}`;
+          console.log('test3')
+          console.log(submitUrl)
           const testEmonPut = await axios.put(submitUrl, {
             ...values,
           });
+          console.log('values : ', values)
+          console.log('test4')
           console.log('test emon "PUT" data (userAgentPk O) : ', testEmonPut);
           window.open('https://www.naver.com');
           window.open('https://www.google.com');
@@ -42,6 +49,7 @@ export default function One() {
           const testEmonPut = await axios.put(`/emon/score`)
           console.log('test emon "PUT" data (userAgentPk X)  : ', testEmonPut);
         }
+
       } catch (error) {
         console.error('Error submitting form:', error);
       } finally {

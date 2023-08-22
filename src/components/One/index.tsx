@@ -4,10 +4,10 @@ import {useMutation} from 'react-query';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 import {ChangeEvent, useState} from "react";
-
+import LoadingSpinner from "../Spinner";
 
 interface ButtonState {
-  userAgentPk: string;
+  userId: string | string[];
   isTest: boolean;
   isEmonSend: boolean;
 }
@@ -15,6 +15,7 @@ interface ButtonState {
 export default function One() {
 
   const [step, setStep] = useState<number>(1);
+  const [isPut, setIsPut] = useState<boolean>(false);
 
   function handleResizeHeight(event: ChangeEvent<HTMLTextAreaElement>) {
     const textarea = event.target;
@@ -23,57 +24,63 @@ export default function One() {
   }
 
   const validationSchema = Yup.object().shape({
-    userAgentPk: Yup.string().required('ID를 입력해주세요.'), // 사용자 ID 필수 입력
+    userId: Yup.string().required('ID를 입력해주세요.'), // 사용자 ID 필수 입력
   });
 
   const mutation = useMutation(
-    async (values: ButtonState) => {
-      const emonPutTest = await axios.put(`/emon/score/?userAgentPk=${values.userAgentPk}&isTest=${values.isTest}&isEmonSend=${values.isEmonSend}`, values);
-      return emonPutTest.data;
+    async (formData: ButtonState) => {
+      const queryParams = new URLSearchParams({
+        isTest: formData.isTest.toString(),
+        isEmonSend: formData.isEmonSend.toString(),
+      }).toString();
+      const submitUrl = `/emon/score?${queryParams}`;
+      const response = await axios.put(submitUrl, formData.userId);
+      return response.data;
     },
     {
       onSuccess: (data) => {
-        console.log('PUT 요청 성공 : ', data);
-        // window.open('https://kji.or.kr/emon/test/attend_hist_test.asp');
-        // window.open('https://kji.or.kr/emon/test/attend_rslt_ct_hist_test.asp');
+        console.log('PUT 요청 성공:', data);
+        setIsPut(true)
       },
       onError: (error) => {
-        alert('전송에 실패하였습니다! 5분뒤에 다시 시도해주세요!');
-        console.error('PUT 요청 실패 : ', error);
-      }
+        console.log('PUT 요청 실패:', error);
+        alert('전송에 실패하였습니다! 5분 뒤에 다시 시도해주세요!');
+      },
     }
   );
 
-  const formik = useFormik<ButtonState>({
+  const formik = useFormik({
     initialValues: {
-      userAgentPk: '',
+      userId: '',
       isTest: true,
       isEmonSend: false,
     },
     validationSchema,
-    onSubmit: async (values, {setSubmitting}) => {
-      try {
-        const trimmedUserAgentPk = values.userAgentPk.trim();
-        const valuesArray = trimmedUserAgentPk.split(',').map(item => item.trim());
-        console.log('valuesArray : ', valuesArray)
-        await validationSchema.validate(values, {abortEarly: false});
-        console.log('input values : ', values);
-        console.log('input userAgentPk values :', values.userAgentPk);
-        await mutation.mutateAsync(values);
-      } catch (error) {
-        console.error('Error submitting form:', error);
-      } finally {
-        setSubmitting(false); // 전송 완료 후 상태 변경
-      }
+    onSubmit: async (values) => {
+      const trimmedUserId = values.userId.trim();
+      const valuesArray = trimmedUserId.split(',').map((item: string) => item.trim());
+      const formData = {
+        userId: valuesArray,
+        isTest: values.isTest,
+        isEmonSend: values.isEmonSend,
+      };
+      console.log("전송한 FormData : ", formData);
+      await mutation.mutateAsync(formData);
     },
   });
 
-  //
   const renderComponent = () => {
     switch (step) {
       case 1:
         return (
           <TestButtonWrapper>
+            {mutation.isLoading && <LoadingSpinner/>}
+            {isPut ?
+              <StepButtonWrap>
+                <TestButton2 onClick={() => setStep(2)}>스탭2</TestButton2>
+                <TestButton2 onClick={() => setStep(3)}>스탭3</TestButton2>
+              </StepButtonWrap>
+              : null}
             <form onSubmit={formik.handleSubmit}>
               <div style={{
                 display: 'flex',
@@ -93,27 +100,30 @@ export default function One() {
                 }}>
                 <InputSpan>수강생 ID : </InputSpan>
                 <StyledTextarea
-                  id="userAgentPk"
-                  name="userAgentPk"
+                  id="userId"
+                  name="userId"
                   placeholder="Input ID"
-                  // onChange={formik.handleChange}
                   onChange={(event) => {
                     formik.handleChange(event);
                     handleResizeHeight(event);
                   }}
                   onBlur={formik.handleBlur}
-                  value={formik.values.userAgentPk}
+                  value={formik.values.userId}
                   rows={1}
                 />
+                <InputSpan style={{color: 'gray'}}>데이터는 쉼표로 구분합니다. 스페이스바는 전송버튼을 누를시 자동 제거됩니다.</InputSpan>
+                <InputSpan style={{color: 'gray'}}>(단, 문자와 문자 사이의 스페이스바는 제거되지 않음)</InputSpan>
+                <InputSpan style={{color: 'gray'}}>올바른 예시 : test1, test2,test3 , test4</InputSpan>
+                <InputSpan style={{color: 'gray'}}>잘못된 예시 : tes t1, te s t2,te st3 , tes t4</InputSpan>
               </div>
-              {formik.touched.userAgentPk && formik.errors.userAgentPk ? (
+              {formik.touched.userId && formik.errors.userId ? (
                 <div style={{
                   color: 'red',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                   marginBottom: '15px'
-                }}>{formik.errors.userAgentPk}</div>
+                }}>{formik.errors.userId}</div>
               ) : null}
               {/**/}
               <div
@@ -138,10 +148,10 @@ export default function One() {
                       width: '75px',
                     }}
                   >
-                    <option style={{width: '35px'}} value={true.toString()}>
+                    <option style={{width: '35px'}} value="true">
                       TRUE
                     </option>
-                    <option value={false.toString()}>FALSE</option>
+                    <option value="false">FALSE</option>
                   </select>
                 </label>
               </div>
@@ -167,18 +177,15 @@ export default function One() {
                       width: '75px',
                     }}
                   >
-                    <option style={{width: '35px'}} value={true.toString()}>TRUE</option>
-                    <option value={false.toString()}>FALSE</option>
+                    <option style={{width: '35px'}} value='true'>TRUE</option>
+                    <option value='false'>FALSE</option>
                   </select>
                 </label>
               </div>
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px'}}>
                 <TestButton type='submit'>전송</TestButton>
               </div>
-              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px'}}>
-                <TestButton2 onClick={() => setStep(2)}>스탭2</TestButton2>
-                <TestButton2 onClick={() => setStep(3)}>스탭3</TestButton2>
-              </div>
+
             </form>
           </TestButtonWrapper>
         );
@@ -186,6 +193,12 @@ export default function One() {
       case 2:
         return (
           <TestButtonWrapper>
+            {isPut ?
+              <StepButtonWrap>
+                <TestButton2 onClick={() => setStep(1)}>스탭1</TestButton2>
+                <TestButton2 onClick={() => setStep(3)}>스탭3</TestButton2>
+              </StepButtonWrap>
+              : null}
             <div style={{
               width: '100vw',
               height: '100vh',
@@ -194,20 +207,38 @@ export default function One() {
               alignItems: 'center'
             }}>
               <iframe
-                src="https://www.naver.com"
-                title="Naver Website"
+                src="https://kji.or.kr/emon/test/attend_hist_test.asp"
+                title="attend_hist_test"
                 width="100%"
                 height="100%"
               ></iframe>
-            </div>
-            <div style={{marginTop: '10px'}}>
-              <TestButton2 onClick={() => setStep(3)}>스탭3</TestButton2>
             </div>
           </TestButtonWrapper>
         );
       case 3:
         return (
-          <div>3</div>
+          <TestButtonWrapper>
+            {isPut ?
+              <StepButtonWrap>
+                <TestButton2 onClick={() => setStep(1)}>스탭1</TestButton2>
+                <TestButton2 onClick={() => setStep(2)}>스탭2</TestButton2>
+              </StepButtonWrap>
+              : null}
+            <div style={{
+              width: '100vw',
+              height: '100vh',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <iframe
+                src="https://kji.or.kr/emon/test/attend_rslt_ct_hist_test.asp"
+                title="attend_rslt_ct_hist_test"
+                width="100%"
+                height="100%"
+              ></iframe>
+            </div>
+          </TestButtonWrapper>
         );
       default:
         return null;
@@ -266,7 +297,8 @@ const TestButton2 = styled.button`
   height: 30px;
   border: none;
   background: #8988db;
-  color: #fff;
+  //color: #fff;
+  color: black;
   border-radius: 4px;
   transition: 0.3s;
   cursor: pointer;
@@ -291,4 +323,16 @@ const StyledTextarea = styled.textarea`
   max-height: 250px;
   overflow-y: auto;
   font-size: 15px;
+`;
+
+const StepButtonWrap = styled.div`
+  position: absolute;
+  top: 8px; /* 조정할 원하는 위치로 변경 */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
 `;

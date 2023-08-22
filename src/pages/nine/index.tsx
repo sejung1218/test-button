@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import One from "@/components/one";
+import One from "../../components/One";
 
 interface ButtonState {
   userAgentPk: string;
   isEmonSend: boolean;
 }
 
-export default function Nine(props: ButtonState) {
+export default function Nine() {
 
   return (
     <TestButtonWrapper>

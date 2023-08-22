@@ -3,6 +3,7 @@ import axios from 'axios';
 import {useMutation} from 'react-query';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
+import {ChangeEvent, useRef} from "react";
 
 
 interface ButtonState {
@@ -12,6 +13,12 @@ interface ButtonState {
 }
 
 export default function One() {
+
+  function handleResizeHeight(event: ChangeEvent<HTMLTextAreaElement>) {
+    const textarea = event.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
 
   const validationSchema = Yup.object().shape({
     userAgentPk: Yup.string().required('ID를 입력해주세요.'), // 사용자 ID 필수 입력
@@ -29,6 +36,7 @@ export default function One() {
         window.open('https://kji.or.kr/emon/test/attend_rslt_ct_hist_test.asp');
       },
       onError: (error) => {
+        alert('전송에 실패하였습니다! 5분뒤에 다시 시도해주세요!');
         console.error('PUT 요청 실패 : ', error);
       }
     }
@@ -57,18 +65,35 @@ export default function One() {
   return (
     <TestButtonWrapper>
       <form onSubmit={formik.handleSubmit}>
-        <TitleEmon>EMON 임시 데이터 재전송</TitleEmon>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '15px'
+        }}>
+          <TitleEmon>EMON 임시 데이터 재전송</TitleEmon></div>
         <div
-          style={{display: 'flex', gap: '5px', justifyContent: 'center', alignItems: 'center', marginBottom: '15px'}}>
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '5px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: '15px'
+          }}>
           <InputSpan>수강생 ID : </InputSpan>
-          <StyledInput
-            type="text"
+          <StyledTextarea
             id="userAgentPk"
             name="userAgentPk"
             placeholder="Input ID"
-            onChange={formik.handleChange}
+            // onChange={formik.handleChange}
+            onChange={(event) => {
+              formik.handleChange(event);
+              handleResizeHeight(event);
+            }}
             onBlur={formik.handleBlur}
             value={formik.values.userAgentPk}
+            rows={1}
           />
         </div>
         {formik.touched.userAgentPk && formik.errors.userAgentPk ? (
@@ -152,10 +177,14 @@ const TestButtonWrapper = styled.div`
 `;
 
 const TitleEmon = styled.div`
+  display: flex;
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 24px;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
 `
 
 const TestButton = styled.button`
@@ -180,8 +209,11 @@ const InputSpan = styled.span`
   display: inline-block;
 `
 
-const StyledInput = styled.input`
-  width: 100px;
-  height: 30px;
-  padding: 0 5px 0 5px;
+const StyledTextarea = styled.textarea`
+  width: 500px;
+  padding: 0 5px;
+  min-height: 30px;
+  max-height: 250px;
+  overflow-y: auto;
+  font-size: 15px;
 `;

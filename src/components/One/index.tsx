@@ -73,7 +73,7 @@ export default function One() {
     switch (step) {
       case 1:
         return (
-          <TestButtonWrapper>
+          <EmonIdSection>
             {mutation.isLoading && <LoadingSpinner/>}
             {isPut ?
               <StepButtonWrap>
@@ -82,13 +82,6 @@ export default function One() {
               </StepButtonWrap>
               : null}
             <form onSubmit={formik.handleSubmit}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: '15px'
-              }}>
-                <TitleEmon>EMON 임시 데이터 재전송</TitleEmon></div>
               <div
                 style={{
                   display: 'flex',
@@ -185,14 +178,13 @@ export default function One() {
               <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px'}}>
                 <TestButton type='submit'>전송</TestButton>
               </div>
-
             </form>
-          </TestButtonWrapper>
+          </EmonIdSection>
         );
 
       case 2:
         return (
-          <TestButtonWrapper>
+          <EmonIdSection>
             {isPut ?
               <StepButtonWrap>
                 <TestButton2 onClick={() => setStep(1)}>스탭1</TestButton2>
@@ -214,11 +206,11 @@ export default function One() {
                 style={{color: 'black'}}
               ></iframe>
             </div>
-          </TestButtonWrapper>
+          </EmonIdSection>
         );
       case 3:
         return (
-          <TestButtonWrapper>
+          <EmonIdSection>
             {isPut ?
               <StepButtonWrap>
                 <TestButton2 onClick={() => setStep(1)}>스탭1</TestButton2>
@@ -239,7 +231,7 @@ export default function One() {
                 height="100%"
               ></iframe>
             </div>
-          </TestButtonWrapper>
+          </EmonIdSection>
         );
       default:
         return null;
@@ -250,28 +242,34 @@ export default function One() {
   return <>{renderComponent()}</>;
 }
 
-const TestButtonWrapper = styled.div`
-  margin: 0 auto;
-  padding: 40px 0;
+// const TestButtonWrapper = styled.div`
+//   margin: 0 auto;
+//   padding: 40px 0;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100vw;
+//   height: 100vh;
+//   background-color: #3b3b3b;
+//   color: white;
+//   border: 1px solid white;
+//   box-sizing: border-box;
+// `;
+
+// const EmonNameNumberSection = styled.div`
+//   border: 1px solid white;
+//   width: 100%;
+//   height: 200px;
+//   margin-bottom: 30px;
+// `
+const EmonIdSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  background-color: #3b3b3b;
-  color: white;
-`;
-
-const TitleEmon = styled.div`
-  display: flex;
-  color: white;
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 24px;
   align-items: center;
-  justify-content: center;
-  width: fit-content;
 `
 
 const TestButton = styled.button`
@@ -299,7 +297,6 @@ const TestButton2 = styled.button`
   height: 30px;
   border: none;
   background: #8988db;
-  //color: #fff;
   color: black;
   border-radius: 4px;
   transition: 0.3s;
@@ -331,7 +328,7 @@ const StyledTextarea = styled.textarea`
 
 const StepButtonWrap = styled.div`
   position: absolute;
-  top: 8px; /* 조정할 원하는 위치로 변경 */
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

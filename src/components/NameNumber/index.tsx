@@ -43,12 +43,14 @@ export default function NameNumber() {
     {
       onSuccess: (data) => {
         console.log('userAgentPk & businessNumber PUT 요청 성공:', data);
-        alert("userAgentPk & businessNumber PUT 성공")
+        // alert("userAgentPk & businessNumber PUT 성공")
+        alert("변경 요청 성공")
       },
       onError: (data, error) => {
         console.log('PUT 요청 실패 data : ', data);
         console.log('PUT 요청 실패 error : ', error);
-        alert("userAgentPk & businessNumber PUT 실패")
+        // alert("userAgentPk & businessNumber PUT 실패")
+        alert("유효하지 않은 ID입니다.")
       },
     }
   );
@@ -66,12 +68,14 @@ export default function NameNumber() {
     {
       onSuccess: (data) => {
         console.log('userAgentPk & businessNumber PUT 요청 성공:', data);
-        alert("userAgentPk & jumin PUT 성공")
+        // alert("userAgentPk & jumin PUT 성공")
+        alert("변경 요청 성공")
       },
       onError: (data, error) => {
         console.log('PUT 요청 실패 data : ', data);
         console.log('PUT 요청 실패 error : ', error);
-        alert("userAgentPk & jumin PUT 실패")
+        // alert("userAgentPk & jumin PUT 실패")
+        alert("유효하지 않은 ID입니다.")
       },
     }
   );
@@ -95,9 +99,19 @@ export default function NameNumber() {
         };
         console.log("전송한 userAgentPk & businessNumber FormData : ", formData);
         try {
+          if (formData.userAgentPk01 === '' && formData.businessNumber === '') {
+            alert("ID와 사업장 번호를 입력해주세요.")
+          } else if (formData.userAgentPk01 === '') {
+            alert("ID를 입력해주세요.")
+          } else if (formData.businessNumber === '') {
+            alert("사업장 번호를 입력해주세요.")
+          } else {
+            await mutation01.mutateAsync(formData);
+            // resetForm();
+          }
           // await validationSchema01.validate(formData);
-          await mutation01.mutateAsync(formData);
-          resetForm();
+          // await mutation01.mutateAsync(formData);
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
@@ -114,14 +128,23 @@ export default function NameNumber() {
         };
         console.log("전송한 userAgentPk & jumin FormData : ", formData);
         try {
+          if (formData.userAgentPk02 === '' && formData.jumin === '') {
+            alert("ID와 주민등록번호를 입력해주세요.")
+          } else if (formData.userAgentPk02 === '') {
+            alert("ID를 입력해주세요.")
+          } else if (formData.jumin === '') {
+            alert("주민등록번호를 입력해주세요.")
+          } else {
+            await mutation02.mutateAsync(formData);
+            // resetForm();
+          }
           // await validationSchema02.validate(formData);
-          await mutation02.mutateAsync(formData);
-          resetForm();
+          // await mutation02.mutateAsync(formData);
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
       }
-      resetForm();
     },
   });
 
@@ -146,7 +169,7 @@ export default function NameNumber() {
             onBlur={formik.handleBlur}
             value={formik.values.userAgentPk01}
           />
-          <InputSpan>비용수급사업장번호를 : </InputSpan>
+          <InputSpan>비용수급사업장번호 : </InputSpan>
           <InputText
             type="number"
             pattern="[0-9]*"
@@ -179,7 +202,7 @@ export default function NameNumber() {
             onBlur={formik.handleBlur}
             value={formik.values.userAgentPk02}
           />
-          <InputSpan style={{marginLeft: '58px;'}}>주민등록번호 : </InputSpan>
+          <InputSpan style={{marginLeft: '42px;'}}>주민등록번호 : </InputSpan>
           <InputText
             type="number"
             id="jumin"

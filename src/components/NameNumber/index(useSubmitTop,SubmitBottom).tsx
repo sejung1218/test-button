@@ -3,7 +3,7 @@ import axios from 'axios';
 import {useMutation} from 'react-query';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
-import {useState} from "react";
+import React from "react";
 
 interface ButtonState01 {
   userAgentPk01: string;
@@ -23,12 +23,6 @@ export default function NameNumber() {
     userAgentPk02: Yup.string().required('userAgentApk를 입력해주세요.'), // 사용자 ID 필수 입력
     jumin: Yup.number().required('주민등록번호를 입력해주세요.').typeError('숫자만 입력 가능합니다.'), // 숫자만 입력
   });
-
-  const handleUserInfo = () => {
-    window.open('https://kji.or.kr/emon/test/user_hist_test.asp')
-  }
-
-  const [buttonState, setButtonState] = useState<number>(1);
 
   const mutation01 = useMutation(
     async (formData: ButtonState01) => {
@@ -76,17 +70,15 @@ export default function NameNumber() {
     }
   );
 
-  const formik = useFormik({
+  const {getFieldProps, touched, errors, validateForm} = useFormik({
     initialValues: {
       userAgentPk01: '',
       userAgentPk02: '',
       businessNumber: '',
       jumin: '',
-    },
-    // validationSchema,
+    }, validationSchema,
     onSubmit: async (values, {resetForm}) => {
-      // if (values.businessNumber) {
-      if (buttonState === 2) {
+      if (values.businessNumber) {
         const trimUserAgentPk = values.userAgentPk01.trim();
         const trimBusinessNumber = values.businessNumber.toString().trim();
         const formData = {
@@ -97,15 +89,12 @@ export default function NameNumber() {
         try {
           // await validationSchema01.validate(formData);
           await mutation01.mutateAsync(formData);
-          resetForm();
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
-        setButtonState(1)
       }
-      // if (values.jumin) {
-      if (buttonState === 3) {
-
+      if (values.jumin) {
         const trimUserAgentPk = values.userAgentPk02.trim();
         const trimJumin = values.jumin.toString().trim();
         const formData = {
@@ -116,18 +105,57 @@ export default function NameNumber() {
         try {
           // await validationSchema02.validate(formData);
           await mutation02.mutateAsync(formData);
-          resetForm();
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
       }
-      resetForm();
+      // resetForm();
     },
   });
 
+  const onSubmitTop = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log('1')
+    e.preventDefault();
+    const formErrors = await validateForm();
+    console.log('formErrors : ', formErrors)
+    const trimUserAgentPk = getFieldProps('userAgentPk01').toString().trim();
+    const trimBusinessNumber = getFieldProps('businessNumber').toString().trim();
+    const formData = {
+      userAgentPk01: trimUserAgentPk,
+      businessNumber: trimBusinessNumber,
+    };
+    console.log("전송한 userAgentPk & businessNumber FormData : ", formData);
+    try {
+      await mutation01.mutateAsync(formData);
+    } catch (error) {
+      console.log('유효성 검사 실패:', error);
+    }
+  }
+
+  const onSubmitBottom = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log('2')
+    e.preventDefault();
+    const formErrors = await validateForm();
+    console.log('formErrors : ', formErrors)
+    const trimUserAgentPk = getFieldProps('userAgentPk02').toString().trim();
+    console.log('trimUserAgentPk : ', trimUserAgentPk)
+    const trimJumin = getFieldProps('jumin').toString().trim();
+    const formData = {
+      userAgentPk02: trimUserAgentPk,
+      jumin: trimJumin,
+    };
+    console.log("전송한 userAgentPk & jumin FormData : ", formData);
+    try {
+      await mutation02.mutateAsync(formData);
+    } catch (error) {
+      console.log('유효성 검사 실패:', error);
+    }
+  }
+
   return (
     <EmonNameNumberSection>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={onSubmitTop}>
         <div style={{
           display: 'flex',
           flexDirection: 'row',
@@ -140,27 +168,38 @@ export default function NameNumber() {
           <InputSpan>수강생 ID : </InputSpan>
           <InputText
             type="text"
-            id="userAgentPk01"
-            name="userAgentPk01"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.userAgentPk01}
+            {...getFieldProps('userAgentPk01')}
           />
           <InputSpan>비용수급사업장번호를 : </InputSpan>
           <InputText
             type="number"
             pattern="[0-9]*"
-            id="businessNumber"
-            name="businessNumber"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.businessNumber}
+            {...getFieldProps('businessNumber')}
           />
-          <TestButton type='submit' onClick={() => setButtonState(2)}>변경</TestButton>
+
+          <TestButton type='submit'>변경</TestButton>
         </div>
+        {/**/}
+        <div style={{
+          color: 'red',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '15px',
+          gap: '140px'
+        }}>
+          {touched.userAgentPk01 && errors.userAgentPk01 ? (
+            <div>{errors.userAgentPk01}</div>
+          ) : null}
+          {touched.businessNumber && errors.businessNumber ? (
+            <div>{errors.businessNumber}</div>
+          ) : null}
+        </div>
+        {/**/}
       </form>
 
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={onSubmitBottom}>
         <div style={{
           display: 'flex',
           flexDirection: 'row',
@@ -173,25 +212,33 @@ export default function NameNumber() {
           <InputSpan>수강생 ID : </InputSpan>
           <InputText
             type="text"
-            id="userAgentPk02"
-            name="userAgentPk02"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.userAgentPk02}
+            {...getFieldProps('userAgentPk02')}
           />
           <InputSpan style={{marginLeft: '58px;'}}>주민등록번호 : </InputSpan>
           <InputText
             type="number"
-            id="jumin"
-            name="jumin"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.jumin}
+            {...getFieldProps('jumin')}
           />
-          <TestButton type='submit' onClick={() => setButtonState(3)}>변경</TestButton>
+          <TestButton type='submit'>변경</TestButton>
+        </div>
+        {/**/}
+        <div style={{
+          color: 'red',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '15px',
+          gap: '140px'
+        }}>
+          {touched.userAgentPk02 && errors.userAgentPk02 ? (
+            <div>{errors.userAgentPk02}</div>
+          ) : null}
+          {touched.jumin && errors.jumin ? (
+            <div>{errors.jumin}</div>
+          ) : null}
         </div>
       </form>
-      <UserInfoButton onClick={handleUserInfo}>유저 정보 전송</UserInfoButton>
     </EmonNameNumberSection>
   )
 }
@@ -242,29 +289,5 @@ const InputText = styled.input`
   ::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-`
-
-const UserInfoButton = styled.button`
-  margin-top: 20px;
-  width: 320px;
-  height: 40px;
-  font-size: 20px;
-  border: none;
-  background: #4844ff;
-  color: #fff;
-  border-radius: 4px;
-  transition: 0.3s;
-  cursor: pointer;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-
-  &:hover {
-    background: #3733e9;
-  }
-
-  &:active {
-    background: #2b28ca;
   }
 `

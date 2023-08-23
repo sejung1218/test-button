@@ -86,10 +86,10 @@ export default function One() {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '5px',
+                  gap: '8px',
                   justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: '15px'
+                  alignItems: 'flex-start',
+                  marginBottom: '15px',
                 }}>
                 <InputSpan>수강생 ID : </InputSpan>
                 <StyledTextarea
@@ -104,10 +104,12 @@ export default function One() {
                   value={formik.values.userId}
                   rows={1}
                 />
-                <InputSpan>데이터는 쉼표로 구분합니다. 스페이스바는 전송버튼을 누를시 자동 제거됩니다.</InputSpan>
-                <InputSpan>(단, 문자와 문자 사이의 스페이스바는 제거되지 않음)</InputSpan>
-                <InputSpan>올바른 예시 : test1, test2,test3 , test4</InputSpan>
-                <InputSpan>잘못된 예시 : tes t1, te s t2,te st3 , tes t4</InputSpan>
+                <InputSpan style={{marginTop: '15px', fontWeight: 'lighter'}}>데이터는 쉼표로 구분합니다. 스페이스바는 전송버튼을 누를시 자동
+                  제거됩니다.</InputSpan>
+                <InputSpan style={{fontWeight: 'lighter'}}>(단, 문자와 문자 사이의 스페이스바는 제거되지 않음)</InputSpan>
+                <InputSpan style={{marginTop: '15px'}}>올바른 예시 : test1, test2,test3 , test4</InputSpan>
+                <InputSpan style={{marginBottom: '15px'}}>잘못된 예시 : tes t1, te s t2,te st3 , tes
+                  t4</InputSpan>
               </div>
               {formik.touched.userId && formik.errors.userId ? (
                 <div style={{
@@ -118,7 +120,6 @@ export default function One() {
                   marginBottom: '15px'
                 }}>{formik.errors.userId}</div>
               ) : null}
-              {/**/}
               <div
                 style={{
                   display: 'flex',

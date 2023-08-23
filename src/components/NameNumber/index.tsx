@@ -91,6 +91,7 @@ export default function NameNumber() {
         try {
           await validationSchema01.validate(formData);
           await mutation01.mutateAsync(formData);
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
@@ -106,10 +107,12 @@ export default function NameNumber() {
         try {
           await validationSchema02.validate(formData);
           await mutation02.mutateAsync(formData);
+          // resetForm();
         } catch (error) {
           console.log('유효성 검사 실패:', error);
         }
       }
+      // resetForm();
     },
   });
 
